@@ -38,21 +38,6 @@ def analyze_with_gemini(news_text):
     """
     Feeds the search results to Gemini for high-level financial analysis.
     """
-    
-    # --- TEST MODE START ---
-    # (This forces the AI to send an alert so you can verify it works)
-    print("TEST MODE ACTIVE: Generating dummy alert...")
-    return {
-        "found_new_update": True,
-        "source_text": "TEST ALERT: This is a simulated alert to prove the system is working.",
-        "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M'),
-        "sentiment": "Doveish",
-        "gold_forecast": "Bearish",
-        "reasoning": "This is a test run to verify GitHub Actions and Discord connectivity."
-    }
-    # --- TEST MODE END ---
-
-    # Real code (temporarily disabled by the return above)
     if not news_text:
         return {"found_new_update": False}
 
