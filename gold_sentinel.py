@@ -37,7 +37,16 @@ def analyze_with_gemini(news_text):
     Feeds the search results to Gemini for high-level financial analysis.
     """
     if not news_text:
-        return {"found_new_update": False}
+        # --- TEST MODE START ---
+return {
+    "found_new_update": True,
+    "source_text": "TEST ALERT: Trump just posted about a great deal with Iran!",
+    "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M'),
+    "sentiment": "Doveish",
+    "gold_forecast": "Bearish",
+    "reasoning": "This is a test to verify the system works."
+}
+# --- TEST MODE END ---
 
     model = genai.GenerativeModel('gemini-2.0-flash')
     
