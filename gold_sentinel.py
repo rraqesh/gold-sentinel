@@ -26,8 +26,10 @@ def get_latest_news():
     try:
         results = DDGS().text("Donald Trump Truth Social Iran nuclear deal latest news", max_results=5)
         # Combine the search snippets into one block of text for the AI to read
-        news_summary = "\n".join([f"- {r['title']}: {r['body']}" for r in results])
-        return news_summary
+        if results:
+            news_summary = "\n".join([f"- {r['title']}: {r['body']}" for r in results])
+            return news_summary
+        return ""
     except Exception as e:
         print(f"Search failed: {e}")
         return ""
@@ -36,18 +38,22 @@ def analyze_with_gemini(news_text):
     """
     Feeds the search results to Gemini for high-level financial analysis.
     """
+    
+    # --- TEST MODE START ---
+    # (This forces the AI to send an alert so you can verify it works)
+    print("TEST MODE ACTIVE: Generating dummy alert...")
+    return {
+        "found_new_update": True,
+        "source_text": "TEST ALERT: This is a simulated alert to prove the system is working.",
+        "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M'),
+        "sentiment": "Doveish",
+        "gold_forecast": "Bearish",
+        "reasoning": "This is a test run to verify GitHub Actions and Discord connectivity."
+    }
+    # --- TEST MODE END ---
+
+    # Real code (temporarily disabled by the return above)
     if not news_text:
-        # --- TEST MODE START ---
-        return {
-            "found_new_update": True,
-            "source_text": "TEST ALERT: Trump just posted about a great deal with Iran!",
-            "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M'),
-            "sentiment": "Doveish",
-            "gold_forecast": "Bearish",
-            "reasoning": "This is a test to verify the system works."
-        }
-        # --- TEST MODE END ---
-        
         return {"found_new_update": False}
 
     model = genai.GenerativeModel('gemini-2.0-flash')
@@ -80,7 +86,6 @@ def analyze_with_gemini(news_text):
     
     try:
         response = model.generate_content(prompt)
-        # Clean the response to ensure it's pure JSON
         clean_text = response.text.replace('```json', '').replace('```', '').strip()
         return json.loads(clean_text)
     except Exception as e:
@@ -127,9 +132,13 @@ def main():
             except:
                 history = []
         
-        # Check for duplicates (don't alert the same thing twice)
-        last_summary = history[0]['source_text'] if history else ""
-        if analysis['source_text'] != last_summary:
+        # Check for duplicates
+        # NOTE: For Test Mode, we DISABLE the duplicate check so it fires every time
+        # In real mode, you would uncomment the next line
+        # last_summary = history[0]['source_text'] if history else ""
+        
+        # if analysis['source_text'] != last_summary: (Disabled for test)
+        if True: 
             print(f"New update found: {analysis['source_text']}")
             send_alert(analysis)
             
@@ -138,8 +147,6 @@ def main():
             os.makedirs(os.path.dirname(HISTORY_FILE), exist_ok=True)
             with open(HISTORY_FILE, 'w') as f:
                 json.dump(history[:50], f, indent=2)
-        else:
-            print("Update found, but it is a duplicate of the last alert.")
     else:
         print("No significant new updates found.")
 
