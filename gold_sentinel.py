@@ -47,6 +47,8 @@ return {
     "reasoning": "This is a test to verify the system works."
 }
 # --- TEST MODE END ---
+        
+        return {"found_new_update": False}
 
     model = genai.GenerativeModel('gemini-2.0-flash')
     
