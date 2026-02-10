@@ -1,0 +1,39 @@
+name: GoldSentinel Hourly Scan
+
+on:
+  schedule:
+    - cron: '0 */8 * * *' # Runs every 8 hours at minute 0
+  workflow_dispatch: # Allows manual trigger button
+
+permissions:
+  contents: write # REQUIRED: Allows the bot to save the history.json file
+
+jobs:
+  run-scan:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run GoldSentinel Agent
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: python gold_sentinel.py
+
+      - name: Save Database Changes
+        run: |
+          git config --global user.name 'GoldSentinel Bot'
+          git config --global user.email 'bot@noreply.github.com'
+          git add data/history.json
+          # Only commit if there are changes
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update gold history" && git push)
