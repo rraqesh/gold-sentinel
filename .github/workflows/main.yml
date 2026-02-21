@@ -2,7 +2,7 @@ name: GoldSentinel Hourly Scan
 
 on:
   schedule:
-    - cron: '0 * * * *' # Runs every hour at minute 0
+    - cron: '30 9 * * 6' # Runs every Saturday at 1 AM IST
   workflow_dispatch: # Allows manual trigger button
 
 permissions:
