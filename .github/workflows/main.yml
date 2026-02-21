@@ -1,4 +1,4 @@
-name: GoldSentinel Hourly Scan
+name: GoldSentinel Weekly Scan
 
 on:
   schedule:
