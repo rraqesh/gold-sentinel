@@ -1,10 +1,10 @@
 [
   {
-    "found_new_update": true,
-    "source_text": "TEST ALERT: Trump just posted about a great deal with Iran!",
-    "timestamp": "2026-02-08 17:34",
-    "sentiment": "Doveish",
-    "gold_forecast": "Bearish",
-    "reasoning": "This is a test to verify the system works."
+   "found_new_update": true,
+   "source_text": "A brief 1-sentence summary of the specific event/post.",
+   "timestamp": "{datetime.now().strftime('%Y-%m-%d %H:%M')}",
+   "sentiment": "Hawkish/Doveish/Neutral",
+   "gold_forecast": "Bullish/Bearish",
+   "reasoning": "A short explanation of why gold will move this way."
   }
 ]
